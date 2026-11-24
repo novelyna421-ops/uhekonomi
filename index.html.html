@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuis Ekonomi Kelas X - Keseimbangan Pasar & Konsep Dasar</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f0f4f8;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .custom-radio:checked + label {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+      color: #1e40af;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+  <!-- Navigation / Header -->
+  <header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="bg-blue-500 p-2 rounded-lg">
+          <i class="fa-solid fa-chart-line text-xl"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight">EKO-QUIZ KELAS X</h1>
+          <p class="text-xs text-blue-200">Keseimbangan Pasar & Konsep Dasar Ekonomi (TP 16)</p>
+        </div>
+      </div>
+      
+      <!-- Live Timer & Violation Badge (Visible during quiz) -->
+      <div id="quiz-header-info" class="hidden flex items-center space-x-4">
+        <div class="bg-indigo-800 px-3 py-1.5 rounded-lg border border-indigo-700 flex items-center space-x-2">
+          <i class="fa-regular fa-clock text-amber-400"></i>
+          <span id="timer-display" class="font-mono font-bold text-lg text-amber-300">45:00</span>
+        </div>
+        <div class="bg-red-900/60 text-red-200 px-3 py-1.5 rounded-lg border border-red-700 flex items-center space-x-2 text-xs font-semibold">
+          <i class="fa-solid fa-triangle-exclamation text-red-400"></i>
+          <span>Pelanggaran: <span id="violation-count-badge" class="text-white text-sm font-bold">0</span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="max-w-4xl mx-auto px-4 py-6 flex-grow w-full">
+    
+    <!-- STEP 1: IDENTITY INPUT SCREEN -->
+    <div id="screen-identity" class="glass-card rounded-2xl p-6 md:p-8 shadow-xl max-w-lg mx-auto mt-6 border border-slate-200">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+          <i class="fa-solid fa-user-pen"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900">Identitas Peserta Didik</h2>
+        <p class="text-sm text-slate-500 mt-1">Silakan isi nama lengkap dan kelas sebelum memulai kuis TKA.</p>
+      </div>
+
+      <form id="form-identity" onsubmit="startQuiz(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+              <i class="fa-solid fa-user"></i>
+            </span>
+            <input type="text" id="input-name" required placeholder="Contoh: Ahmad Budiman"
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Kelas</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </span>
+            <input type="text" id="input-class" required placeholder="Contoh: X IPS 1 / X-A"
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+          </div>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-800 space-y-1.5">
+          <p class="font-bold flex items-center text-amber-900"><i class="fa-solid fa-circle-info mr-1.5"></i> Aturan & Ketentuan Kuis:</p>
+          <ul class="list-disc list-inside space-y-1 text-amber-800">
+            <li>Jumlah Soal: <b>20 Soal Pilihan Ganda (TKA)</b></li>
+            <li>Alokasi Waktu: <b>45 Menit</b></li>
+            <li>Dilarang berpindah tab browser / aplikasi lain. <b>Sistem memicu suara bel peringatan & mencatat jumlah pelanggaran.</b></li>
+          </ul>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-blue-500/30 transition duration-200 flex items-center justify-center space-x-2">
+          <span>Mulai Kuis Sekarang</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- STEP 2: QUIZ INTERACTIVE SCREEN -->
+    <div id="screen-quiz" class="hidden space-y-6">
+      
+      <!-- Progress Bar & Question Tracker -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="flex items-center space-x-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200" id="question-level">Tingkat: Easy</span>
+          <span class="text-sm font-semibold text-slate-600">Soal <span id="current-q-num" class="text-blue-600 font-bold">1</span> dari 20</span>
+        </div>
+        <div class="w-full md:w-64 bg-slate-100 rounded-full h-2.5 overflow-hidden">
+          <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 5%"></div>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="bg-white rounded-2xl p-6 md:p-8 shadow-md border border-slate-200 space-y-6">
+        
+        <!-- Topic Badge -->
+        <div class="text-xs font-semibold text-slate-500 flex items-center space-x-2 border-b border-slate-100 pb-3">
+          <i class="fa-solid fa-bookmark text-blue-500"></i>
+          <span id="question-topic">Topik Soal</span>
+        </div>
+
+        <!-- Question Text -->
+        <h3 id="question-text" class="text-lg md:text-xl font-bold text-slate-900 leading-relaxed">
+          Teks soal akan muncul di sini...
+        </h3>
+
+        <!-- Illustration Image / SVG Container -->
+        <div id="question-image-container" class="my-4 p-4 bg-slate-50 rounded-xl border border-slate-200 flex justify-center items-center overflow-x-auto min-h-[160px]">
+          <!-- SVG Graphic Rendered Here -->
+        </div>
+
+        <!-- Multiple Choice Options -->
+        <div id="options-container" class="space-y-3 pt-2">
+          <!-- Options dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="flex items-center justify-between pt-2">
+        <button id="btn-prev" onclick="navigateQuestion(-1)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-5 py-2.5 rounded-xl transition flex items-center space-x-2 disabled:opacity-40 disabled:cursor-not-allowed">
+          <i class="fa-solid fa-chevron-left"></i>
+          <span>Sebelumnya</span>
+        </button>
+        <button id="btn-next" onclick="navigateQuestion(1)" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition flex items-center space-x-2">
+          <span>Berikutnya</span>
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <button id="btn-submit-final" onclick="confirmFinishQuiz()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-md transition flex items-center space-x-2">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>Kumpulkan Jawaban</span>
+        </button>
+      </div>
+
+      <!-- Quick Question Grid Selector -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Navigasi Nomor Soal:</p>
+        <div id="question-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-2">
+          <!-- 1 to 20 buttons -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- STEP 3: RESULT & SCORE SCREEN -->
+    <div id="screen-result" class="hidden glass-card rounded-2xl p-6 md:p-8 shadow-xl max-w-2xl mx-auto space-y-6">
+      <div class="text-center space-y-2 border-b border-slate-200 pb-6">
+        <div class="inline-flex p-3 bg-emerald-100 text-emerald-600 rounded-full text-3xl mb-2">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-900">Hasil Kuis Ekonomi</h2>
+        <p class="text-slate-500 text-sm">Rangkuman Nilai & Laporan Pelanggaran Peserta Didik</p>
+      </div>
+
+      <!-- Score Summary Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
+          <p class="text-xs text-blue-600 font-semibold uppercase">Skor Akhir</p>
+          <p id="res-score" class="text-3xl font-extrabold text-blue-700 mt-1">0</p>
+          <p class="text-[10px] text-blue-400">skor maks: 100</p>
+        </div>
+
+        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center">
+          <p class="text-xs text-emerald-600 font-semibold uppercase">Jawaban Benar</p>
+          <p id="res-correct" class="text-3xl font-extrabold text-emerald-700 mt-1">0 / 20</p>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-center">
+          <p class="text-xs text-slate-500 font-semibold uppercase">Waktu Tempuh</p>
+          <p id="res-time" class="text-xl font-bold text-slate-700 mt-2">00:00</p>
+        </div>
+
+        <div class="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
+          <p class="text-xs text-red-600 font-semibold uppercase">Pelanggaran Tab</p>
+          <p id="res-violations" class="text-3xl font-extrabold text-red-600 mt-1">0</p>
+        </div>
+      </div>
+
+      <!-- Identity Meta Box -->
+      <div class="bg-white border border-slate-200 rounded-xl p-4 text-sm space-y-2">
+        <div class="flex justify-between border-b border-slate-100 pb-1.5">
+          <span class="text-slate-500">Nama Peserta:</span>
+          <span id="res-name" class="font-bold text-slate-800">-</span>
+        </div>
+        <div class="flex justify-between border-b border-slate-100 pb-1.5">
+          <span class="text-slate-500">Kelas:</span>
+          <span id="res-class" class="font-bold text-slate-800">-</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Waktu Selesai:</span>
+          <span id="res-timestamp" class="font-semibold text-slate-700">-</span>
+        </div>
+      </div>
+
+      <!-- Copy Result Button -->
+      <button onclick="copyResultSummary()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition flex items-center justify-center space-x-2">
+        <i class="fa-regular fa-copy"></i>
+        <span>Salin Ringkasan Nilai untuk Guru</span>
+      </button>
+      <p id="copy-toast" class="hidden text-center text-xs font-bold text-emerald-600"><i class="fa-solid fa-check mr-1"></i> Teks nilai berhasil disalin ke clipboard!</p>
+
+      <!-- Lock Password Section for Discussion/Key -->
+      <div class="border-t border-slate-200 pt-6 mt-6 space-y-4">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-lock text-amber-500 text-xl"></i>
+          <h3 class="font-bold text-slate-800">Pembahasan & Kunci Jawaban</h3>
+        </div>
+        <p class="text-xs text-slate-500">Masukkan kode akses rahasia dari guru untuk membuka kunci jawaban dan penjelasan lengkap.</p>
+        
+        <div id="discussion-lock-box" class="flex gap-2">
+          <input type="password" id="input-access-code" placeholder="Masukkan Kode Akses..." 
+            class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 outline-none text-sm">
+          <button onclick="unlockDiscussion()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition">
+            Buka Kunci
+          </button>
+        </div>
+        <p id="access-code-error" class="hidden text-xs text-red-600 font-semibold"><i class="fa-solid fa-circle-xmark mr-1"></i> Kode akses salah!</p>
+
+        <!-- Unlocked Discussion Content -->
+        <div id="discussion-content" class="hidden space-y-4 pt-4 border-t border-amber-200">
+          <div class="bg-amber-50 border border-amber-300 text-amber-900 rounded-xl p-3 text-xs font-semibold flex items-center justify-between">
+            <span><i class="fa-solid fa-lock-open mr-1.5"></i> Pembahasan Terbuka (Kode: ILOVEYOU)</span>
+          </div>
+
+          <div id="discussion-list" class="space-y-4 text-sm max-h-96 overflow-y-auto pr-2">
+            <!-- Dynamic discussion items -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Anti-Cheat Alarm Warning Modal -->
+  <div id="cheat-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl border-4 border-red-500 text-center space-y-4 animate-bounce">
+      <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-3xl">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 class="text-2xl font-extrabold text-red-600">PERINGATAN PELANGGARAN!</h3>
+      <p class="text-slate-700 font-semibold text-sm">
+        Anda terdeteksi meninggalkan halaman tab kuis! 
+      </p>
+      <p class="text-xs text-slate-500">
+        Setiap kali keluar tab, bel peringatan berbunyi dan akumulasi jumlah pelanggaran Anda akan tercatat secara permanen pada laporan guru.
+      </p>
+      <div class="bg-red-50 text-red-700 py-2 rounded-lg font-bold text-sm">
+        Total Pelanggaran: <span id="modal-violation-count">1</span> Kali
+      </div>
+      <button onclick="closeCheatModal()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition">
+        Saya Mengerti & Kembali Mengerjakan
+      </button>
+    </div>
+  </div>
+
+  <footer class="bg-slate-800 text-slate-400 text-xs py-4 text-center mt-10">
+    <p>© Kuis Ekonomi Kelas X - Keseimbangan Pasar (TP 16)</p>
+  </footer>
+
+  <!-- Quiz Script -->
+  <script>
+    // 20 Questions Grounded Directly in Kuis_Konsep_Dasar_Ekonomi.pdf
+    const quizData = [
+      {
+        id: 1,
+        topic: "Pelaku Ekonomi (RTK)",
+        level: "Mudah",
+        question: "Kelompok pelaku ekonomi yang berperan sebagai pemilik faktor produksi (tanah, tenaga kerja, modal, dan kewirausahaan) serta memperoleh pendapatan berupa sewa, upah/gaji, bunga, dan laba adalah...",
+        options: [
+          "Rumah Tangga Produsen (RTP)",
+          "Rumah Tangga Konsumen (RTK)",
+          "Rumah Tangga Negara (RTN)",
+          "Masyarakat Luar Negeri",
+          "Lembaga Perbankan"
+        ],
+        answerKey: 1, // B
+        explanation: "RTK adalah pemilik faktor produksi (alam, tenaga kerja, modal, skill) dan menerima imbalan berupa sewa, upah, bunga, serta laba dari RTP.",
+        svg: `<svg width="220" height="120" viewBox="0 0 220 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="20" width="90" height="80" rx="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/><text x="55" y="55" font-size="12" font-weight="bold" fill="#1E40AF" text-anchor="middle">RTK</text><text x="55" y="75" font-size="9" fill="#1E3A8A" text-anchor="middle">(Pemilik Input)</text><path d="M110 50 H160" stroke="#059669" stroke-width="3" stroke-dasharray="4 4"/><polygon points="160,46 170,50 160,54" fill="#059669"/><text x="135" y="42" font-size="8" fill="#047857" font-weight="bold" text-anchor="middle">Faktor Produksi</text><rect x="170" y="20" width="40" height="80" rx="6" fill="#D1FAE5" stroke="#059669" stroke-width="2"/></svg>`
+      },
+      {
+        id: 2,
+        topic: "Pelaku Ekonomi (RTP)",
+        level: "Mudah",
+        question: "Peran utama Rumah Tangga Produsen (RTP) dalam alur kegiatan perekonomian adalah...",
+        options: [
+          "Menyediakan faktor produksi untuk diproses lebih lanjut",
+          "Membayar pajak bumi dan bangunan kepada masyarakat",
+          "Mengombinasikan faktor produksi untuk menghasilkan barang dan jasa",
+          "Mengatur tingkat suku bunga dan kebijakan moneter",
+          "Membeli barang dan jasa untuk konsumsi akhir"
+        ],
+        answerKey: 2, // C
+        explanation: "RTP bertugas mengombinasikan faktor-faktor produksi yang disewa/dibeli dari RTK untuk menghasilkan barang dan jasa.",
+        svg: `<svg width="220" height="120" viewBox="0 0 220 120"><rect x="20" y="25" width="180" height="70" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2"/><text x="110" y="55" font-size="13" font-weight="bold" fill="#92400E" text-anchor="middle">RUMAH TANGGA PRODUSEN (RTP)</text><text x="110" y="75" font-size="10" fill="#B45309" text-anchor="middle">Input (Faktor) ➔ Produksi ➔ Output (Barang/Jasa)</text></svg>`
+      },
+      {
+        id: 3,
+        topic: "Pelaku Ekonomi (Masyarakat Luar Negeri)",
+        level: "Mudah",
+        question: "Kegiatan ekspor dan impor barang, jasa, serta faktor produksi dalam Circular Flow Diagram melibatkan pelaku ekonomi...",
+        options: [
+          "Rumah Tangga Produsen",
+          "Rumah Tangga Konsumen",
+          "Rumah Tangga Negara",
+          "Masyarakat Luar Negeri",
+          "BUMN dan BUMS"
+        ],
+        answerKey: 3, // D
+        explanation: "Masyarakat Luar Negeri berperan dalam perdagangan internasional melalui kegiatan ekspor dan impor.",
+        svg: `<svg width="220" height="120" viewBox="0 0 220 120"><circle cx="110" cy="60" r="45" fill="#E0E7FF" stroke="#4F46E5" stroke-width="2"/><text x="110" y="55" font-size="11" font-weight="bold" fill="#3730A3" text-anchor="middle">EKSPOR & IMPOR</text><text x="110" y="72" font-size="9" fill="#4338CA" text-anchor="middle">Masyarakat Luar Negeri</text></svg>`
+      },
+      {
+        id: 4,
+        topic: "Pelaku Ekonomi (Pemerintah/RTN)",
+        level: "Sedang",
+        question: "Pemerintah (RTN) memiliki peran penting dalam perekonomian. Salah satu fungsi utama pemerintah yang tidak dimiliki oleh pelaku ekonomi lainnya adalah...",
+        options: [
+          "Menjual faktor produksi di pasar input",
+          "Bertindak sebagai pengatur, pengawas, dan penyedia barang publik",
+          "Memaksimalkan keuntungan individu masyarakat",
+          "Mengonsumsi barang impor tanpa membayar pajak",
+          "Menentukan harga tunggal bagi seluruh barang swasta"
+        ],
+        answerKey: 1, // B
+        explanation: "Pemerintah (RTN) bertugas regulator (pengatur), pengawas perekonomian, serta penyedia fasilitas/barang publik (public goods).",
+        svg: `<svg width="220" height="120" viewBox="0 0 220 120"><rect x="30" y="20" width="160" height="80" rx="10" fill="#F3E8FF" stroke="#9333EA" stroke-width="2"/><text x="110" y="50" font-size="12" font-weight="bold" fill="#6B21A8" text-anchor="middle">RTN (PEMERINTAH)</text><text x="110" y="70" font-size="9" fill="#7E22CE" text-anchor="middle">Regulator & Barang Publik</text></svg>`
+      },
+      {
+        id: 5,
+        topic: "Circular Flow Diagram",
+        level: "Sedang",
+        question: "Dalam kurva aliran melingkar (Circular Flow Diagram) 2 sektor (RTK dan RTP), aliran arus balik dari RTP ke RTK atas penggunaan faktor produksi berupa...",
+        options: [
+          "Pajak dan subsidi",
+          "Barang dan jasa konsumsi",
+          "Sewa, upah, bunga, dan laba",
+          "Ekspor dan impor",
+          "Tabungan dan investasi"
+        ],
+        answerKey: 2, // C
+        explanation: "RTP memberikan balas jasa kepada RTK berupa sewa (tanah), upah (tenaga kerja), bunga (modal), dan laba (kewirausahaan).",
+        svg: `<svg width="240" height="120" viewBox="0 0 240 120"><rect x="10" y="35" width="60" height="50" rx="8" fill="#DBEAFE" stroke="#2563EB"/><text x="40" y="65" font-size="10" font-weight="bold" fill="#1D4ED8" text-anchor="middle">RTK</text><rect x="170" y="35" width="60" height="50" rx="8" fill="#FEF3C7" stroke="#D97706"/><text x="200" y="65" font-size="10" font-weight="bold" fill="#B45309" text-anchor="middle">RTP</text><path d="M 170 45 L 70 45" stroke="#059669" stroke-width="2.5"/><polygon points="70,41 60,45 70,49" fill="#059669"/><text x="120" y="38" font-size="8" font-weight="bold" fill="#047857" text-anchor="middle">Sewa, Upah, Bunga, Laba</text></svg>`
+      },
+      {
+        id: 6,
+        topic: "Masalah Ekonomi Modern (WHAT)",
+        level: "Mudah",
+        question: "Masalah pokok ekonomi modern WHAT berkaitan dengan keputusan mendasar mengenai...",
+        options: [
+          "Bagaimana teknik dan teknologi produksi yang digunakan secara efisien",
+          "Siapa target konsumen yang akan membeli barang/jasa tersebut",
+          "Barang/jasa apa yang akan diproduksi dan berapa jumlah yang dibutuhkan",
+          "Kapan produksi barang tersebut harus dihentikan",
+          "Mengapa barang tersebut dipasarkan ke luar negeri"
+        ],
+        answerKey: 2, // C
+        explanation: "Masalah WHAT menentukan jenis barang/jasa yang perlu diproduksi serta kuantitasnya sesuai skala prioritas kebutuhan masyarakat.",
+        svg: `<svg width="200" height="110" viewBox="0 0 200 110"><rect x="20" y="15" width="160" height="80" rx="10" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/><text x="100" y="50" font-size="16" font-weight="extrabold" fill="#047857" text-anchor="middle">WHAT?</text><text x="100" y="70" font-size="9" fill="#065F46" text-anchor="middle">Jenis Barang & Kuantitas</text></svg>`
+      },
+      {
+        id: 7,
+        topic: "Masalah Ekonomi Modern (HOW)",
+        level: "Sedang",
+        question: "Sebuah produsen pakaian beralih dari jahit manual ke mesin jahit otomatis modern untuk menghemat biaya dan meningkatkan output. Tindakan produsen ini menjawab permasalahan ekonomi modern...",
+        options: [
+          "What",
+          "How",
+          "For Whom",
+          "Why",
+          "Where"
+        ],
+        answerKey: 1, // B
+        explanation: "Masalah HOW berkaitan dengan pilihan teknik produksi, teknologi, serta efisiensi kombinasi faktor produksi yang digunakan.",
+        svg: `<svg width="200" height="110" viewBox="0 0 200 110"><rect x="20" y="15" width="160" height="80" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/><text x="100" y="50" font-size="16" font-weight="extrabold" fill="#1D4ED8" text-anchor="middle">HOW?</text><text x="100" y="70" font-size="9" fill="#1E40AF" text-anchor="middle">Teknik & Efisiensi Produksi</text></svg>`
+      },
+      {
+        id: 8,
+        topic: "Masalah Ekonomi Modern (FOR WHOM)",
+        level: "Mudah",
+        question: "Permasalahan mengenai alokasi dan penentuan target pasar atau kelompok masyarakat mana yang akan menggunakan produk hasil produksi disebut masalah...",
+        options: [
+          "What",
+          "How",
+          "For Whom",
+          "When",
+          "Who"
+        ],
+        answerKey: 2, // C
+        explanation: "Masalah FOR WHOM menyangkut distribusi hasil produksi dan siapa konsumen yang berhak/mampu menikmati barang dan jasa tersebut.",
+        svg: `<svg width="200" height="110" viewBox="0 0 200 110"><rect x="20" y="15" width="160" height="80" rx="10" fill="#FEF2F2" stroke="#EF4444" stroke-width="2"/><text x="100" y="50" font-size="16" font-weight="extrabold" fill="#B91C1C" text-anchor="middle">FOR WHOM?</text><text x="100" y="70" font-size="9" fill="#991B1B" text-anchor="middle">Target Pasar / Segmen Konsumen</text></svg>`
+      },
+      {
+        id: 9,
+        topic: "Masalah Ekonomi Klasik",
+        level: "Mudah",
+        question: "Teori ekonomi klasik mengelompokkan masalah pokok ekonomi ke dalam tiga rantai kegiatan utama, yaitu...",
+        options: [
+          "What, How, dan For Whom",
+          "Produksi, Distribusi, dan Konsumsi",
+          "Permintaan, Penawaran, dan Keseimbangan",
+          "Pengangguran, Inflasi, dan Kemiskinan",
+          "Kelangkaan, Kebutuhan, dan Alat Pemuas"
+        ],
+        answerKey: 1, // B
+        explanation: "Masalah ekonomi klasik meliputi 3 masalah utama: masalah produksi, masalah distribusi, dan masalah konsumsi.",
+        svg: `<svg width="240" height="100" viewBox="0 0 240 100"><rect x="10" y="30" width="60" height="40" rx="6" fill="#DBEAFE" stroke="#2563EB"/><text x="40" y="54" font-size="8" font-weight="bold" fill="#1E40AF" text-anchor="middle">Produksi</text><path d="M 72 50 H 88" stroke="#64748B" stroke-width="2"/><rect x="90" y="30" width="60" height="40" rx="6" fill="#FEF3C7" stroke="#D97706"/><text x="120" y="54" font-size="8" font-weight="bold" fill="#92400E" text-anchor="middle">Distribusi</text><path d="M 152 50 H 168" stroke="#64748B" stroke-width="2"/><rect x="170" y="30" width="60" height="40" rx="6" fill="#D1FAE5" stroke="#059669"/><text x="200" y="54" font-size="8" font-weight="bold" fill="#065F46" text-anchor="middle">Konsumsi</text></svg>`
+      },
+      {
+        id: 10,
+        topic: "Kelangkaan (Scarcity)",
+        level: "Sedang",
+        question: "Inti dari masalah ekonomi yang memicu timbulnya pilihan (choice) dan biaya peluang (opportunity cost) adalah...",
+        options: [
+          "Kebutuhan manusia terbatas sedangkan sumber daya tidak terbatas",
+          "Kebutuhan manusia tidak terbatas sedangkan alat pemuas kebutuhan terbatas",
+          "Jumlah uang yang beredar lebih sedikit daripada jumlah barang",
+          "Kenaikan harga barang pokok secara terus menerus",
+          "Ketidakmampuan pemerintah mengatur pasar bebas"
+        ],
+        answerKey: 1, // B
+        explanation: "Kelangkaan (Scarcity) terjadi karena adanya ketidakseimbangan antara kebutuhan manusia yang tidak terbatas dengan sumber daya yang terbatas.",
+        svg: `<svg width="220" height="110" viewBox="0 0 220 110"><rect x="20" y="20" width="80" height="70" rx="8" fill="#FEE2E2" stroke="#DC2626"/><text x="60" y="45" font-size="9" font-weight="bold" fill="#991B1B" text-anchor="middle">Kebutuhan</text><text x="60" y="65" font-size="14" font-weight="bold" fill="#7F1D1D" text-anchor="middle">∞ (Tak Terbatas)</text><rect x="120" y="20" width="80" height="70" rx="8" fill="#E0E7FF" stroke="#4F46E5"/><text x="160" y="45" font-size="9" font-weight="bold" fill="#3730A3" text-anchor="middle">Sumber Daya</text><text x="160" y="65" font-size="12" font-weight="bold" fill="#312E81" text-anchor="middle">Terbatas</text></svg>`
+      },
+      {
+        id: 11,
+        topic: "Sistem Ekonomi Pasar / Liberal",
+        level: "Mudah",
+        question: "Suatu negara yang memberikan kebebasan penuh kepada masyarakat dan mekanisme pasar untuk menyelesaikan masalah What, How, dan For Whom menerapkan sistem ekonomi...",
+        options: [
+          "Komando / Terpusat",
+          "Tradisional",
+          "Pasar / Liberal",
+          "Campuran",
+          "Etatisme"
+        ],
+        answerKey: 2, // C
+        explanation: "Sistem ekonomi pasar/liberal menyerahkan seluruh alokasi sumber daya dan harga kepada persaingan bebas dan mekanisme pasar.",
+        svg: `<svg width="200" height="100" viewBox="0 0 200 100"><rect x="20" y="15" width="160" height="70" rx="10" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/><text x="100" y="45" font-size="12" font-weight="bold" fill="#0369A1" text-anchor="middle">PASAR LIBERAL</text><text x="100" y="65" font-size="9" fill="#075985" text-anchor="middle">Mekanisme Pasar Bebas</text></svg>`
+      },
+      {
+        id: 12,
+        topic: "Sistem Ekonomi Komando / Terpusat",
+        level: "Sedang",
+        question: "Pada sistem ekonomi terpusat (komando), peran pemerintah dalam perekonomian adalah...",
+        options: [
+          "Hanya bertindak sebagai pengawas persaingan swasta",
+          "Membebaskan perorangan memiliki seluruh faktor produksi",
+          "Menentukan dan mengendalikan seluruh alokasi sumber daya serta jenis barang yang diproduksi",
+          "Menyerahkan harga barang pada hukum permintaan dan penawaran",
+          "Mengabaikan sektor produksi barang publik"
+        ],
+        answerKey: 2, // C
+        explanation: "Sistem terpusat (komando) menempatkan pemerintah sebagai pembuat keputusan tunggal atas alokasi sumber daya dan barang produksi.",
+        svg: `<svg width="200" height="100" viewBox="0 0 200 100"><rect x="20" y="15" width="160" height="70" rx="10" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"/><text x="100" y="45" font-size="12" font-weight="bold" fill="#B91C1C" text-anchor="middle">EKONOMI KOMANDO</text><text x="100" y="65" font-size="9" fill="#991B1B" text-anchor="middle">Kontrol Penuh Pemerintah</text></svg>`
+      },
+      {
+        id: 13,
+        topic: "Sistem Ekonomi Campuran",
+        level: "Sedang",
+        question: "Tujuan utama diterapkannya sistem ekonomi campuran adalah...",
+        options: [
+          "Menghilangkan peran swasta dalam perekonomian nasional",
+          "Mengombinasikan efisiensi mekanisme pasar dengan peran pemerintah untuk mencegah monopoli",
+          "Memastikan seluruh pendapatan masyarakat sama rata",
+          "Menghentikan kegiatan impor dari luar negeri",
+          "Menghapus pungutan pajak bagi produsen lokal"
+        ],
+        answerKey: 1, // B
+        explanation: "Sistem campuran memadukan inisiatif kebebasan pasar bebas dengan intervensi pemerintah untuk menjaga keadilan dan stabilitas ekonomi.",
+        svg: `<svg width="200" height="100" viewBox="0 0 200 100"><rect x="20" y="15" width="160" height="70" rx="10" fill="#F3E8FF" stroke="#A855F7" stroke-width="2"/><text x="100" y="45" font-size="12" font-weight="bold" fill="#7E22CE" text-anchor="middle">EKONOMI CAMPURAN</text><text x="100" y="65" font-size="9" fill="#6B21A8" text-anchor="middle">Pasar + Intervensi Negara</text></svg>`
+      },
+      {
+        id: 14,
+        topic: "Hukum Permintaan",
+        level: "Mudah",
+        question: "Bunyi Hukum Permintaan yang tepat di bawah asumsi ceteris paribus adalah...",
+        options: [
+          "Semakin tinggi harga suatu barang, semakin banyak jumlah barang yang diminta",
+          "Semakin rendah harga suatu barang, semakin sedikit jumlah barang yang diminta",
+          "Semakin tinggi harga suatu barang, semakin sedikit jumlah barang yang diminta",
+          "Kenaikan harga barang akan memicu kenaikan penawaran barang tersebut",
+          "Permintaan barang tidak berhubungan dengan harga barang tersebut"
+        ],
+        answerKey: 2, // C
+        explanation: "Hukum Permintaan menyatakan hubungan berlawanan (negatif): jika harga naik, jumlah barang yang diminta berkurang (ceteris paribus).",
+        svg: `<svg width="200" height="120" viewBox="0 0 200 120"><line x1="30" y1="100" x2="180" y2="100" stroke="#64748B" stroke-width="2"/><line x1="30" y1="100" x2="30" y2="20" stroke="#64748B" stroke-width="2"/><text x="20" y="20" font-size="10" font-weight="bold" fill="#475569">P</text><text x="185" y="105" font-size="10" font-weight="bold" fill="#475569">Q</text><line x1="45" y1="30" x2="165" y2="90" stroke="#EF4444" stroke-width="3"/><text x="150" y="80" font-size="12" font-weight="bold" fill="#DC2626">D (Demand)</text></svg>`
+      },
+      {
+        id: 15,
+        topic: "Hukum Penawaran",
+        level: "Mudah",
+        question: "Hubungan antara harga barang dan kuantitas barang yang ditawarkan oleh produsen menurut Hukum Penawaran bersifat...",
+        options: [
+          "Berlawanan arah (negatif)",
+          "Searah (positif)",
+          "Terdapat selisih konstan",
+          "Tidak saling mempengaruhi",
+          "Berbanding terbalik"
+        ],
+        answerKey: 1, // B
+        explanation: "Hukum Penawaran menyatakan hubungan searah (positif): jika harga naik, penawaran barang yang ditawarkan bertambah (ceteris paribus).",
+        svg: `<svg width="200" height="120" viewBox="0 0 200 120"><line x1="30" y1="100" x2="180" y2="100" stroke="#64748B" stroke-width="2"/><line x1="30" y1="100" x2="30" y2="20" stroke="#64748B" stroke-width="2"/><text x="20" y="20" font-size="10" font-weight="bold" fill="#475569">P</text><text x="185" y="105" font-size="10" font-weight="bold" fill="#475569">Q</text><line x1="45" y1="90" x2="165" y2="30" stroke="#2563EB" stroke-width="3"/><text x="150" y="40" font-size="12" font-weight="bold" fill="#1D4ED8">S (Supply)</text></svg>`
+      },
+      {
+        id: 16,
+        topic: "Asumsi Ceteris Paribus",
+        level: "Sedang",
+        question: "Penggunaan asumsi ceteris paribus dalam analisis hukum permintaan dan penawaran berarti...",
+        options: [
+          "Semua variabel di pasar berubah secara dinamis",
+          "Faktor selain harga barang itu sendiri dianggap tetap/tidak berubah",
+          "Pendapatan konsumen selalu mengalami kenaikan",
+          "Biaya produksi selalu bernilai nol",
+          "Pemerintah ikut campur menetapkan tarif pajak"
+        ],
+        answerKey: 1, // B
+        explanation: "Ceteris paribus adalah asumsi dalam ekonomi di mana variabel selain harga barang itu sendiri dianggap konstan/tetap.",
+        svg: `<svg width="200" height="90" viewBox="0 0 200 90"><rect x="20" y="15" width="160" height="60" rx="8" fill="#F1F5F9" stroke="#64748B" stroke-width="2"/><text x="100" y="40" font-size="11" font-weight="bold" fill="#334155" text-anchor="middle">CETERIS PARIBUS</text><text x="100" y="58" font-size="9" fill="#475569" text-anchor="middle">Faktor Lain Konstan/Tetap</text></svg>`
+      },
+      {
+        id: 17,
+        topic: "Pergeseran Kurva Permintaan",
+        level: "Sulit",
+        question: "Manakah dari kejadian berikut yang akan menyebabkan kurva permintaan suatu barang bergeser ke kanan?",
+        options: [
+          "Kenaikan harga barang itu sendiri",
+          "Penurunan pendapatan konsumen untuk barang normal",
+          "Peningkatan selera dan minat konsumen terhadap barang tersebut",
+          "Kenaikan biaya bahan baku produksi",
+          "Penurunan jumlah penduduk di suatu wilayah"
+        ],
+        answerKey: 2, // C
+        explanation: "Peningkatan selera konsumen meningkatkan jumlah permintaan pada setiap tingkat harga, sehingga kurva permintaan bergeser ke kanan.",
+        svg: `<svg width="220" height="120" viewBox="0 0 220 120"><line x1="30" y1="100" x2="200" y2="100" stroke="#64748B" stroke-width="2"/><line x1="30" y1="100" x2="30" y2="20" stroke="#64748B" stroke-width="2"/><line x1="45" y1="35" x2="145" y2="95" stroke="#94A3B8" stroke-width="2" stroke-dasharray="3 3"/><text x="135" y="90" font-size="9" fill="#64748B">D1</text><line x1="75" y1="35" x2="175" y2="95" stroke="#EF4444" stroke-width="3"/><text x="170" y="90" font-size="10" font-weight="bold" fill="#DC2626">D2 (Kanan)</text><path d="M 100 55 L 125 55" stroke="#059669" stroke-width="2"/><polygon points="125,52 132,55 125,58" fill="#059669"/></svg>`
+      },
+      {
+        id: 18,
+        topic: "Keseimbangan Pasar (Equilibrium)",
+        level: "Sedang",
+        question: "Keseimbangan pasar (Equilibrium) tercapai ketika...",
+        options: [
+          "Penawaran lebih tinggi daripada permintaan",
+          "Permintaan lebih tinggi daripada penawaran",
+          "Jumlah barang yang diminta sama dengan jumlah barang yang ditawarkan (Qd = Qs)",
+          "Pemerintah menetapkan batas harga minimum",
+          "Biaya produksi produsen mencapai titik nol"
+        ],
+        answerKey: 2, // C
+        explanation: "Harga keseimbangan pasar terjadi pada perpotongan kurva permintaan dan penawaran, di mana Qd = Qs (atau Pd = Ps).",
+        svg: `<svg width="220" height="120" viewBox="0 0 220 120"><line x1="30" y1="100" x2="190" y2="100" stroke="#64748B"/><line x1="30" y1="100" x2="30" y2="20" stroke="#64748B"/><line x1="45" y1="30" x2="165" y2="90" stroke="#EF4444" stroke-width="2.5"/><line x1="45" y1="90" x2="165" y2="30" stroke="#2563EB" stroke-width="2.5"/><circle cx="105" cy="60" r="5" fill="#10B981"/><text x="115" y="58" font-size="10" font-weight="bold" fill="#047857">E (Qd = Qs)</text></svg>`
+      },
+      {
+        id: 19,
+        topic: "Perhitungan Keseimbangan Pasar",
+        level: "Sulit",
+        question: "Diketahui fungsi permintaan Qd = 50 - 2P dan fungsi penawaran Qs = -10 + 4P. Maka harga keseimbangan pasar (P) adalah...",
+        options: [
+          "P = 5",
+          "P = 10",
+          "P = 15",
+          "P = 20",
+          "P = 25"
+        ],
+        answerKey: 1, // B
+        explanation: "Syarat keseimbangan Qd = Qs: 50 - 2P = -10 + 4P => 50 + 10 = 4P + 2P => 60 = 6P => P = 10.",
+        svg: `<svg width="220" height="100" viewBox="0 0 220 100"><rect x="15" y="15" width="190" height="70" rx="10" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/><text x="110" y="40" font-size="11" font-weight="bold" fill="#1E40AF" text-anchor="middle">Qd = 50 - 2P  |  Qs = -10 + 4P</text><text x="110" y="65" font-size="12" font-weight="extrabold" fill="#047857" text-anchor="middle">50 - 2P = -10 + 4P ➔ P = 10</text></svg>`
+      },
+      {
+        id: 20,
+        topic: "Kondisi Kelebihan Penawaran (Surplus)",
+        level: "Sulit",
+        question: "Jika harga barang yang berlaku di pasar berada di atas harga keseimbangan pasar, maka kondisi yang akan terjadi di pasar adalah...",
+        options: [
+          "Kelangkaan barang (Shortage)",
+          "Kelebihan penawaran barang (Surplus)",
+          "Terjadi keseimbangan baru secara otomatis",
+          "Permintaan masyarakat melonjak",
+          "Kurva penawaran bergeser ke kiri"
+        ],
+        answerKey: 1, // B
+        explanation: "Saat harga berada di atas harga keseimbangan, jumlah penawaran produsen melebihi jumlah permintaan konsumen, menimbulkan kelebihan penawaran (Surplus).",
+        svg: `<svg width="220" height="120" viewBox="0 0 220 120"><line x1="30" y1="100" x2="190" y2="100" stroke="#64748B"/><line x1="30" y1="100" x2="30" y2="20" stroke="#64748B"/><line x1="45" y1="30" x2="165" y2="90" stroke="#EF4444" stroke-width="2"/><line x1="45" y1="90" x2="165" y2="30" stroke="#2563EB" stroke-width="2"/><line x1="30" y1="45" x2="175" y2="45" stroke="#D97706" stroke-width="2" stroke-dasharray="4 4"/><text x="180" y="48" font-size="8" font-weight="bold" fill="#D97706">P > Pe</text><rect x="65" y="40" width="75" height="12" fill="#FEF3C7" opacity="0.8"/><text x="102" y="50" font-size="8" font-weight="bold" fill="#B45309" text-anchor="middle">SURPLUS</text></svg>`
+      }
+    ];
+
+    // State Variables
+    let currentQuestionIndex = 0;
+    let userAnswers = new Array(quizData.length).fill(null);
+    let userName = "";
+    let userClass = "";
+    let timerSeconds = 45 * 60; // 45 minutes
+    let timerInterval = null;
+    let violationCount = 0;
+    let startTimeStamp = "";
+    let endTimeStamp = "";
+    let audioCtx = null;
+
+    // Web Audio Beep Alarm Generator
+    function playWarningBeep() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
+        osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+      } catch (e) {
+        console.log("Audio not allowed yet:", e);
+      }
+    }
+
+    // Anti-Cheat: Tab Switch Detection
+    document.addEventListener("visibilitychange", function() {
+      if (document.hidden && document.getElementById("screen-quiz").classList.contains("hidden") === false) {
+        handleViolation();
+      }
+    });
+
+    window.addEventListener("blur", function() {
+      if (document.getElementById("screen-quiz").classList.contains("hidden") === false) {
+        handleViolation();
+      }
+    });
+
+    function handleViolation() {
+      violationCount++;
+      document.getElementById("violation-count-badge").innerText = violationCount;
+      document.getElementById("modal-violation-count").innerText = violationCount;
+      playWarningBeep();
+      document.getElementById("cheat-modal").classList.remove("hidden");
+    }
+
+    function closeCheatModal() {
+      document.getElementById("cheat-modal").classList.add("hidden");
+    }
+
+    // Start Quiz
+    function startQuiz(event) {
+      event.preventDefault();
+      userName = document.getElementById("input-name").value.trim();
+      userClass = document.getElementById("input-class").value.trim();
+
+      if (!userName || !userClass) return;
+
+      startTimeStamp = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      document.getElementById("screen-identity").classList.add("hidden");
+      document.getElementById("screen-quiz").classList.remove("hidden");
+      document.getElementById("quiz-header-info").classList.remove("hidden");
+
+      initQuestionGrid();
+      loadQuestion(0);
+      startTimer();
+    }
+
+    // Timer Logic
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        timerSeconds--;
+        const m = Math.floor(timerSeconds / 60);
+        const s = timerSeconds % 60;
+        document.getElementById("timer-display").innerText = 
+          `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+        if (timerSeconds <= 0) {
+          clearInterval(timerInterval);
+          alert("Waktu 45 menit telah habis! Jawaban Anda otomatis dikumpulkan.");
+          finishQuiz();
+        }
+      }, 1000);
+    }
+
+    // Render Question Grid Buttons
+    function initQuestionGrid() {
+      const grid = document.getElementById("question-grid");
+      grid.innerHTML = "";
+      for (let i = 0; i < quizData.length; i++) {
+        const btn = document.createElement("button");
+        btn.id = `grid-btn-${i}`;
+        btn.innerText = i + 1;
+        btn.className = "py-1.5 text-xs font-bold rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 transition";
+        btn.onclick = () => loadQuestion(i);
+        grid.appendChild(btn);
+      }
+    }
+
+    function updateQuestionGridUI() {
+      for (let i = 0; i < quizData.length; i++) {
+        const btn = document.getElementById(`grid-btn-${i}`);
+        if (!btn) continue;
+        if (i === currentQuestionIndex) {
+          btn.className = "py-1.5 text-xs font-bold rounded-lg border-2 border-blue-600 bg-blue-600 text-white shadow";
+        } else if (userAnswers[i] !== null) {
+          btn.className = "py-1.5 text-xs font-bold rounded-lg border border-emerald-500 bg-emerald-50 text-emerald-700";
+        } else {
+          btn.className = "py-1.5 text-xs font-bold rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-100";
+        }
+      }
+    }
+
+    // Load Specific Question
+    function loadQuestion(index) {
+      currentQuestionIndex = index;
+      const q = quizData[index];
+
+      document.getElementById("current-q-num").innerText = index + 1;
+      document.getElementById("question-topic").innerText = q.topic;
+      document.getElementById("question-level").innerText = "Tingkat: " + q.level;
+      document.getElementById("question-text").innerText = q.question;
+      document.getElementById("question-image-container").innerHTML = q.svg;
+
+      // Progress Bar
+      const pct = ((index + 1) / quizData.length) * 100;
+      document.getElementById("progress-bar").style.width = `${pct}%`;
+
+      // Render Options
+      const optContainer = document.getElementById("options-container");
+      optContainer.innerHTML = "";
+
+      const labels = ["A", "B", "C", "D", "E"];
+      q.options.forEach((optText, optIdx) => {
+        const isChecked = userAnswers[index] === optIdx;
+        const optHtml = `
+          <div class="relative">
+            <input type="radio" name="quiz-option" id="opt-${optIdx}" value="${optIdx}" 
+              class="hidden custom-radio" ${isChecked ? "checked" : ""} onchange="selectOption(${optIdx})">
+            <label for="opt-${optIdx}" 
+              class="flex items-center p-3.5 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 cursor-pointer transition text-sm font-medium text-slate-700">
+              <span class="w-7 h-7 rounded-lg bg-slate-100 font-bold text-slate-600 flex items-center justify-center mr-3 text-xs shrink-0 border border-slate-200">
+                ${labels[optIdx]}
+              </span>
+              <span>${optText}</span>
+            </label>
+          </div>
+        `;
+        optContainer.insertAdjacentHTML("beforeend", optHtml);
+      });
+
+      // Update Nav Buttons
+      document.getElementById("btn-prev").disabled = (index === 0);
+      if (index === quizData.length - 1) {
+        document.getElementById("btn-next").classList.add("hidden");
+        document.getElementById("btn-submit-final").classList.remove("hidden");
+      } else {
+        document.getElementById("btn-next").classList.remove("hidden");
+        document.getElementById("btn-submit-final").classList.add("hidden");
+      }
+
+      updateQuestionGridUI();
+    }
+
+    function selectOption(optIdx) {
+      userAnswers[currentQuestionIndex] = optIdx;
+      updateQuestionGridUI();
+    }
+
+    function navigateQuestion(step) {
+      const target = currentQuestionIndex + step;
+      if (target >= 0 && target < quizData.length) {
+        loadQuestion(target);
+      }
+    }
+
+    function confirmFinishQuiz() {
+      const unanswered = userAnswers.filter(a => a === null).length;
+      let msg = "Apakah Anda yakin ingin mengumpulkan kuis?";
+      if (unanswered > 0) {
+        msg = `Masih ada ${unanswered} soal yang belum dijawab! ` + msg;
+      }
+      if (confirm(msg)) {
+        finishQuiz();
+      }
+    }
+
+    // Calculate Score & Show Results
+    function finishQuiz() {
+      clearInterval(timerInterval);
+      endTimeStamp = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      let correctCount = 0;
+      quizData.forEach((q, idx) => {
+        if (userAnswers[idx] === q.answerKey) {
+          correctCount++;
+        }
+      });
+
+      const finalScore = Math.round((correctCount / quizData.length) * 100);
+      const elapsedSeconds = (45 * 60) - timerSeconds;
+      const elMin = Math.floor(elapsedSeconds / 60);
+      const elSec = elapsedSeconds % 60;
+      const formattedTime = `${elMin}m ${elSec}s`;
+
+      // Fill Result Screen
+      document.getElementById("res-name").innerText = userName;
+      document.getElementById("res-class").innerText = userClass;
+      document.getElementById("res-timestamp").innerText = `${startTimeStamp} - ${endTimeStamp}`;
+      document.getElementById("res-score").innerText = finalScore;
+      document.getElementById("res-correct").innerText = `${correctCount} / ${quizData.length}`;
+      document.getElementById("res-time").innerText = formattedTime;
+      document.getElementById("res-violations").innerText = violationCount;
+
+      // Switch Screens
+      document.getElementById("screen-quiz").classList.add("hidden");
+      document.getElementById("quiz-header-info").classList.add("hidden");
+      document.getElementById("screen-result").classList.remove("hidden");
+
+      renderDiscussionList();
+    }
+
+    // Copy Summary Text
+    function copyResultSummary() {
+      const correctCount = userAnswers.reduce((acc, ans, idx) => ans === quizData[idx].answerKey ? acc + 1 : acc, 0);
+      const finalScore = Math.round((correctCount / quizData.length) * 100);
+
+      const summaryText = 
+`==================================
+  LAPORAN HASIL KUIS EKONOMI KELAS X
+==================================
+Nama Peserta   : ${userName}
+Kelas          : ${userClass}
+Skor Akhir     : ${finalScore} / 100
+Jumlah Benar   : ${correctCount} dari 20 Soal
+Pelanggaran Tab: ${violationCount} Kali
+Waktu Selesai  : ${endTimeStamp}
+==================================`;
+
+      navigator.clipboard.writeText(summaryText).then(() => {
+        const toast = document.getElementById("copy-toast");
+        toast.classList.remove("hidden");
+        setTimeout(() => toast.classList.add("hidden"), 3000);
+      });
+    }
+
+    // Unlock Key & Discussion
+    function unlockDiscussion() {
+      const code = document.getElementById("input-access-code").value.trim();
+      if (code === "ILOVEYOU") {
+        document.getElementById("discussion-lock-box").classList.add("hidden");
+        document.getElementById("access-code-error").classList.add("hidden");
+        document.getElementById("discussion-content").classList.remove("hidden");
+      } else {
+        document.getElementById("access-code-error").classList.remove("hidden");
+      }
+    }
+
+    function renderDiscussionList() {
+      const list = document.getElementById("discussion-list");
+      list.innerHTML = "";
+
+      const labels = ["A", "B", "C", "D", "E"];
+      quizData.forEach((q, idx) => {
+        const userChoice = userAnswers[idx];
+        const isCorrect = (userChoice === q.answerKey);
+
+        const itemHtml = `
+          <div class="p-4 rounded-xl border ${isCorrect ? 'bg-emerald-50/60 border-emerald-200' : 'bg-red-50/60 border-red-200'} space-y-2">
+            <div class="flex items-center justify-between font-bold text-xs">
+              <span class="${isCorrect ? 'text-emerald-700' : 'text-red-700'}">Soal ${idx + 1} (${q.topic})</span>
+              <span class="px-2 py-0.5 rounded text-[10px] ${isCorrect ? 'bg-emerald-200 text-emerald-800' : 'bg-red-200 text-red-800'}">
+                ${isCorrect ? 'BENAR' : 'SALAH'}
+              </span>
+            </div>
+            <p class="font-semibold text-slate-800 text-xs">${q.question}</p>
+            <div class="text-xs space-y-1 text-slate-600">
+              <p>Jawaban Anda: <b class="${isCorrect ? 'text-emerald-700' : 'text-red-700'}">${userChoice !== null ? labels[userChoice] + '. ' + q.options[userChoice] : 'Tidak Dijawab'}</b></p>
+              <p>Kunci Jawaban: <b class="text-emerald-700">${labels[q.answerKey]}. ${q.options[q.answerKey]}</b></p>
+            </div>
+            <div class="bg-white p-2.5 rounded-lg border border-slate-200 text-[11px] text-slate-600 mt-2">
+              <span class="font-bold text-slate-700">Pembahasan:</span> ${q.explanation}
+            </div>
+          </div>
+        `;
+        list.insertAdjacentHTML("beforeend", itemHtml);
+      });
+    }
+  </script>
+</body>
+</html>
